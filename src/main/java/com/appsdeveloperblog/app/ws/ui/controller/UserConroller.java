@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
 
 @RequestMapping("/users")
@@ -35,9 +38,17 @@ public class UserConroller {
 		return new ResponseEntity(HttpStatus.BAD_REQUEST);
 	}
 	
-	@PostMapping
-	public String createUser() {
-		return "createUser was invoked";
+	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }
+							,produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<UserREST> createUser(@RequestBody UserDetailsRequestModel userDetails) {
+		
+		UserREST user = new UserREST();
+		user.setFirstName(userDetails.getFirstName());
+		user.setLastName(userDetails.getLastName());
+		user.setEmail(userDetails.getEmail());
+		user.setUserId(userDetails.getUserId());
+		
+		return new ResponseEntity<UserREST>(user,HttpStatus.OK);
 	}
 	
 	@PutMapping
