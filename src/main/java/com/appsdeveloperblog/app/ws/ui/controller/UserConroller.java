@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.appsdeveloperblog.app.ws.ui.model.response.UpdateUserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
 
@@ -61,20 +63,18 @@ public class UserConroller {
 		return new ResponseEntity<UserREST>(user,HttpStatus.OK);
 	}
 	
-	/*
-	 * @PutMapping public String upateUser() {
-	 * 
-	 * UserREST user = new UserREST();
-	 * user.setFirstName(userDetails.getFirstName());
-	 * user.setLastName(userDetails.getLastName());
-	 * user.setEmail(userDetails.getEmail());
-	 * user.setUserId(userDetails.getUserId());
-	 * 
-	 * return "putUser was invoked"; }
-	 */
+	@PutMapping(path="/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public UserREST updateUser(@PathVariable String userId,@Valid @RequestBody UpdateUserDetailsRequestModel userDetails) {
+		UserREST user = users.get(userId);
+		user.setFirstName(userDetails.getFirstName());
+		user.setLastName(userDetails.getLastName());
+		
+		users.put(userId, user);
+		return user;
+	}
 	
 	
-	@DeleteMapping
+	@DeleteMapping()
 	public String deleteUser() {
 		return "deleteUser was invoked";
 	}
