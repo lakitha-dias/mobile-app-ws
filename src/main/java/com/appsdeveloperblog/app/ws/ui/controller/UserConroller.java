@@ -1,5 +1,7 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
+
+import jdk.internal.org.jline.utils.Log;
 
 @RequestMapping("/users")
 @RestController
@@ -40,7 +44,7 @@ public class UserConroller {
 	
 	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }
 							,produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<UserREST> createUser(@RequestBody UserDetailsRequestModel userDetails) {
+	public ResponseEntity<UserREST> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
 		
 		UserREST user = new UserREST();
 		user.setFirstName(userDetails.getFirstName());
