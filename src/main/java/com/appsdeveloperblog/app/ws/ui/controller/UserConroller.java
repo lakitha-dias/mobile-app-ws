@@ -1,5 +1,9 @@
 package com.appsdeveloperblog.app.ws.ui.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -14,15 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
-
-import jdk.internal.org.jline.utils.Log;
 
 @RequestMapping("/users")
 @RestController
 public class UserConroller {
+	
+	Map<String, UserREST> users;
 	
 	@GetMapping()
 	public String getUsers(@RequestParam(value="page", required=false) int page, @RequestParam(value="limit", defaultValue="1", required=false) int limit) {
@@ -31,15 +34,14 @@ public class UserConroller {
 	
 	
 	@GetMapping(path="/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity getUser(@PathVariable String userId) {
+	public ResponseEntity<UserREST> getUser(@PathVariable String userId) {
 		
-		UserREST user = new UserREST();
-		user.setFirstName("Lakitha");
-		user.setLastName("Dias");
-		user.setEmail("lakitha.dias@gmail.com");
-		user.setUserId("lakitha.dias");
-		
-		return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		if(users.containsKey(userId)) {
+			return new ResponseEntity<>(users.get(userId),HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
 	}
 	
 	@PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE }
@@ -52,13 +54,24 @@ public class UserConroller {
 		user.setEmail(userDetails.getEmail());
 		user.setUserId(userDetails.getUserId());
 		
+		String userId = UUID.randomUUID().toString();
+		if(users == null) users = new HashMap<>();
+		users.put(userDetails.getUserId(), user);
+		
 		return new ResponseEntity<UserREST>(user,HttpStatus.OK);
 	}
 	
-	@PutMapping
-	public String putUser() {
-		return "putUser was invoked";
-	}
+	/*
+	 * @PutMapping public String upateUser() {
+	 * 
+	 * UserREST user = new UserREST();
+	 * user.setFirstName(userDetails.getFirstName());
+	 * user.setLastName(userDetails.getLastName());
+	 * user.setEmail(userDetails.getEmail());
+	 * user.setUserId(userDetails.getUserId());
+	 * 
+	 * return "putUser was invoked"; }
+	 */
 	
 	
 	@DeleteMapping
