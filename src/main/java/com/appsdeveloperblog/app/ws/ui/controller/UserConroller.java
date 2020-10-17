@@ -74,8 +74,9 @@ public class UserConroller {
 	}
 	
 	
-	@DeleteMapping()
-	public String deleteUser() {
-		return "deleteUser was invoked";
+	@DeleteMapping(path="/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+	public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
+		users.remove(userId);
+		return ResponseEntity.noContent().build();
 	}
 }
