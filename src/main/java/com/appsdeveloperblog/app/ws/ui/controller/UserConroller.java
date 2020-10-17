@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,16 @@ import com.appsdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.ui.model.response.UpdateUserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
+import com.appsdeveloperblog.app.ws.userservice.UserService;
 
 @RequestMapping("/users")
 @RestController
 public class UserConroller {
 	
 	Map<String, UserREST> users;
+	
+	@Autowired
+	UserService userService;
 	
 	@GetMapping()
 	public String getUsers(@RequestParam(value="page", required=false) int page, @RequestParam(value="limit", defaultValue="1", required=false) int limit) {
@@ -40,7 +45,9 @@ public class UserConroller {
 	public ResponseEntity<UserREST> getUser(@PathVariable String userId) {
 		
 
-	    if(true) throw new UserServiceException("A user service exception thrown.");
+		/*
+		 * if(true) throw new UserServiceException("A user service exception thrown.");
+		 */
 
 		
 		if(users.containsKey(userId)) {
@@ -55,17 +62,10 @@ public class UserConroller {
 							,produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<UserREST> createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
 		
-		UserREST user = new UserREST();
-		user.setFirstName(userDetails.getFirstName());
-		user.setLastName(userDetails.getLastName());
-		user.setEmail(userDetails.getEmail());
-		user.setUserId(userDetails.getUserId());
+		// Dependency injection enables us to mock and test services separately
+		UserREST returnValue = userService.createUser(userDetails);
 		
-		String userId = UUID.randomUUID().toString();
-		if(users == null) users = new HashMap<>();
-		users.put(userDetails.getUserId(), user);
-		
-		return new ResponseEntity<UserREST>(user,HttpStatus.OK);
+		return new ResponseEntity<UserREST>(returnValue,HttpStatus.OK);
 	}
 	
 	@PutMapping(path="/{userId}", produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
