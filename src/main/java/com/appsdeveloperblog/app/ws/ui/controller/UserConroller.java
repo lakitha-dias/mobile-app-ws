@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.appsdeveloperblog.app.ws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.ui.model.response.UpdateUserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.ui.model.response.UserREST;
@@ -39,7 +40,7 @@ public class UserConroller {
 	public ResponseEntity<UserREST> getUser(@PathVariable String userId) {
 		
 
-		String usr = null; usr.getBytes();
+	    if(true) throw new UserServiceException("A user service exception thrown.");
 
 		
 		if(users.containsKey(userId)) {
